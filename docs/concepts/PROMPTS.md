@@ -76,4 +76,3 @@ Subject: three-quarter portrait, head and upper torso of one original futuristic
 Composition: very wide landscape approximately 2.4:1, character sits in rightmost 40% and entire helmet is comfortably framed with dark breathing room above, upper chest and shoulders visible. Left 50% quiet charcoal near-black negative space for software headlines. No props.
 Lighting: sculptural warm silver key light highlighting each crisp bevel, restrained emerald rim and subtle gold rim light, deep blacks, realistic restrained gold reflections, premium photorealistic high-budget game key art. Minimal smoky atmosphere, coherent perspective.
 Constraints: original design, no existing franchise character replica, no words, no logos, no watermark, no borders, no UI mockup, no collage, no rounded shoulders or smooth organic curves, no cartoon, no faceted rock appearance, no ornate fantasy engraving or crown jewelry.
-
