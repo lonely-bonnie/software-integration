@@ -59,7 +59,7 @@ let previewSettings: Settings;
 try {
   previewSettings = {
     ...defaultSettings,
-    ...JSON.parse(localStorage.getItem('rider-preview-settings') || '{}'),
+    ...JSON.parse(localStorage.getItem('astradesk-preview-settings') || '{}'),
     demoMode: true,
   };
 } catch {
@@ -91,7 +91,7 @@ const preview: Bridge = {
       demoMode: true,
       digitalOcean: { dropletId: '', tokenConfigured: false },
     };
-    localStorage.setItem('rider-preview-settings', JSON.stringify(previewSettings));
+    localStorage.setItem('astradesk-preview-settings', JSON.stringify(previewSettings));
     return previewSettings;
   },
   removeToken: async () => previewSettings,
@@ -104,5 +104,5 @@ const preview: Bridge = {
   windowAction: async () => {},
   onSnapshot: () => () => {},
 };
-export const isPreview = !window.rider;
-export const bridge = window.rider || preview;
+export const isPreview = !window.astraDesk;
+export const bridge = window.astraDesk || preview;

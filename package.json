@@ -1,6 +1,6 @@
 {
   "name": "astradesk",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "author": "lonely-bonnie",
@@ -14,6 +14,9 @@
     "build": "tsc --noEmit && vite build",
     "start": "electron .",
     "test": "node --test tests/*.test.cjs",
+    "clean": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/clean-workspace.ps1",
+    "releases:check": "node scripts/check-releases.cjs",
+    "verify:migration": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/verify-data-migration.ps1",
     "icons": "node scripts/create-icon.cjs",
     "package:win": "npm run build && electron-builder --win dir",
     "portable:win": "npm run build && electron-builder --win portable",
@@ -36,10 +39,10 @@
     "vite": "8.3.4"
   },
   "build": {
-    "appId": "dev.riderconsole.workbench",
+    "appId": "dev.astradesk.workbench",
     "productName": "AstraDesk",
     "directories": {
-      "output": "../RiderConsole/releases/${version}"
+      "output": "../AstraDesk-Dev/.build/${version}"
     },
     "files": [
       "dist/**/*",
@@ -61,6 +64,7 @@
       "artifactName": "AstraDesk-${version}-windows-x64-portable.exe"
     },
     "nsis": {
+      "guid": "d0bffbb4-2040-5231-8b25-7a3a86640614",
       "oneClick": false,
       "perMachine": false,
       "allowElevation": false,

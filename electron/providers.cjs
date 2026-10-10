@@ -259,8 +259,8 @@ async function codexQuota(customPath = '', dependencies = {}) {
       try {
         await request('initialize', {
           clientInfo: {
-            name: 'rider_console',
-            title: 'Rider Console',
+            name: 'astradesk',
+            title: 'AstraDesk',
             version: require('../package.json').version,
           },
         });

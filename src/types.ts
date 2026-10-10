@@ -90,6 +90,6 @@ export interface Bridge {
 }
 declare global {
   interface Window {
-    rider?: Bridge;
+    astraDesk?: Bridge;
   }
 }

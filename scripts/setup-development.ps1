@@ -1,4 +1,4 @@
-param([string]$RuntimeRoot = (Join-Path $PSScriptRoot '..\..\RiderConsole'))
+param([string]$RuntimeRoot = $(if ($env:ASTRADESK_WORKSPACE) { $env:ASTRADESK_WORKSPACE } else { Join-Path $PSScriptRoot '..\..\AstraDesk-Dev' }))
 $ErrorActionPreference = 'Stop'
 $sourceRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $runtimeFull = [IO.Path]::GetFullPath($RuntimeRoot)
@@ -24,3 +24,13 @@ if (!(Test-Path -LiteralPath $sourceDependencyPath)) {
     New-Item -ItemType Junction -Path $sourceDependencyPath -Target $dependencyPath | Out-Null
 }
 Write-Output "Development dependencies: $dependencyPath"
+$nodeDirectory = Split-Path (Get-Command node.exe -ErrorAction Stop).Source -Parent
+$launcher = @"
+@echo off
+set "ASTRADESK_WORKSPACE=$runtimeFull"
+set "PATH=$nodeDirectory;%PATH%"
+pushd "$sourceRoot"
+call "$nodeDirectory\npm.cmd" run dev:desktop
+popd
+"@
+[IO.File]::WriteAllText((Join-Path $runtimeFull 'Develop-AstraDesk.cmd'), $launcher, [Text.UTF8Encoding]::new($false))

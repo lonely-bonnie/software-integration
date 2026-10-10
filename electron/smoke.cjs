@@ -4,21 +4,22 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { safeStorage } = require('electron');
 async function smokeCheck(window, refreshMetrics) {
-  const output = process.env.RIDER_SMOKE_DIR;
-  if (!output || !process.env.RIDER_DATA_DIR)
+  const output = process.env.ASTRADESK_SMOKE_DIR;
+  if (!output || !process.env.ASTRADESK_DATA_DIR)
     throw new Error('Smoke check requires isolated output and user data directories');
   fs.mkdirSync(output, { recursive: true });
   const credentialProtection =
     safeStorage.isEncryptionAvailable() &&
-    safeStorage.decryptString(safeStorage.encryptString('rider-health-probe')) ===
-      'rider-health-probe';
+    safeStorage.decryptString(safeStorage.encryptString('astradesk-health-probe')) ===
+      'astradesk-health-probe';
   await new Promise((resolve) => setTimeout(resolve, 500));
   const renderer = await window.webContents
-    .executeJavaScript(`(async () => { const settings = await window.rider.getSettings(); return ({
+    .executeJavaScript(`(async () => { const settings = await window.astraDesk.getSettings(); return ({
     title: document.title,
     heading: document.querySelector('h1')?.textContent,
-    bridgeAvailable: typeof window.rider?.getSettings === 'function',
+    bridgeAvailable: typeof window.astraDesk?.getSettings === 'function',
     ipcSettingsReadable: typeof settings.digitalOcean.tokenConfigured === 'boolean',
+    tokenConfigured: settings.digitalOcean.tokenConfigured,
     theme: settings.theme,
     language: settings.language,
     schemaVersion: settings.schemaVersion,
@@ -42,7 +43,7 @@ async function smokeCheck(window, refreshMetrics) {
   )
     throw new Error('Renderer or bridge health check failed');
   const bilingual = await window.webContents.executeJavaScript(`(async () => {
-    const initial = await window.rider.getSettings();
+    const initial = await window.astraDesk.getSettings();
     const nav = () => [...document.querySelectorAll('nav button')];
     nav()[2].click();
     await new Promise(resolve => setTimeout(resolve, 100));

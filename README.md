@@ -1,8 +1,8 @@
 # AstraDesk · 星辰大海，从桌面开始
 
-AstraDesk 是可扩展的 Windows 桌面工作台：常用网站、DigitalOcean 流量和 Codex 额度集中展示。**0.2.0 Beta** 默认使用暖色流萤主题，支持中英文界面。
+AstraDesk 是可扩展的 Windows 桌面工作台：常用网站、DigitalOcean 流量和 Codex 额度集中展示。**0.2.1 Beta** 默认使用暖色流萤主题，支持中英文界面。
 
-[下载安装版](https://github.com/lonely-bonnie/software-integration/releases/download/v0.2.0/AstraDesk-0.2.0-windows-x64-setup.exe) · [发行与校验文件](https://github.com/lonely-bonnie/software-integration/releases/tag/v0.2.0) · [English](README.en.md)
+[下载安装版](https://github.com/lonely-bonnie/software-integration/releases/download/v0.2.1/AstraDesk-0.2.1-windows-x64-setup.exe) · [发行与校验文件](https://github.com/lonely-bonnie/software-integration/releases/tag/v0.2.1) · [English](README.en.md)
 
 ![流萤主题中文界面，数字为演示数据](docs/assets/astradesk-v020-zh-demo.png)
 
@@ -31,7 +31,7 @@ AstraDesk 是可扩展的 Windows 桌面工作台：常用网站、DigitalOcean 
 
 ## 配置与升级
 
-个人配置存放在当前用户 `%APPDATA%/rider-console`。此历史路径和应用 ID 保持稳定，以兼容改名前的设置。旧配置升级到 schema v2，保留用户的主题和连接；新安装默认流萤。普通升级或卸载保留配置，损坏配置保留原文件并提示恢复。
+个人配置存放在当前用户 `%APPDATA%/AstraDesk`。首次升级自动校验并迁移旧设置和 Windows 加密凭据；已有新配置优先，旧目录保留供回退。迁移失败会继续读取原目录并提示。旧配置归一化到 schema v2，保留用户的主题和连接；新安装默认流萤。普通升级或卸载保留配置，损坏配置保留原文件并提示恢复。
 
 Token 使用 Windows DPAPI 单独加密，不进入普通 JSON、导出文件或渲染器。导出仅包含偏好与网站，不含 Token、Droplet ID 和本机 Codex 路径。朋友需要设置自己的账户连接。AstraDesk 不修改系统 PATH、Python、Conda 或 Codex 配置。
 
@@ -54,14 +54,15 @@ npm run portable:win  # 便携 EXE
 npm run release:win   # 格式/测试/类型检查/构建/两个发行包/SHA256
 ```
 
-发行按版本隔离到同级 `RiderConsole/releases/版本号`。本机开发依赖在 `D:/software/RiderConsole/development`，源码 node_modules 为目录联接；本机请用 `scripts/setup-development.ps1` 安装依赖，避免源码内 npm ci 替换联接。其他电脑的普通 checkout 可以直接 npm ci。
+正式发行包直接存放在 `D:/software/AstraDesk-Dev/releases`，文件名含版本号；打包中间文件放在 `.build/版本号`。本机开发依赖在 `AstraDesk-Dev/development`，源码 node_modules 为目录联接；本机请用 `scripts/setup-development.ps1` 安装依赖，避免源码内 npm ci 替换联接。其他电脑的普通 checkout 可以直接 npm ci。`npm run releases:check` 核对历史包，`npm run clean` 回收生成目录，保留正式包与依赖。[目录和发布约定](docs/RELEASES.md) 说明完整流程。
 
 版本、品牌、默认设置、本地化和模块清单分别集中管理；扩展模块须经过受控数据适配器和 IPC。当前支持可信内置模块，不加载任意第三方代码。GitHub Actions 模板已提供，尚未启用；本地发布检查已经执行。
 
 ## 项目文档
 
 - [工程边界与扩展](docs/ENGINEERING.md)
-- [发布说明](docs/releases/v0.2.0.md) / [变更记录](CHANGELOG.md)
+- [发布说明](docs/releases/v0.2.1.md) / [变更记录](CHANGELOG.md)
+- [目录与版本管理](docs/RELEASES.md) / [本版验证](docs/VALIDATION.md)
 - [贡献与验证要求](CONTRIBUTING.md)
 - [初版设计](docs/PROJECT_DESIGN.md) / [数据适配边界](docs/IMPLEMENTATION.md)
 - [开源监控方案调研](docs/OPEN_SOURCE_RESEARCH.md)

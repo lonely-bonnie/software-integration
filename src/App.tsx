@@ -171,7 +171,7 @@ export default function App() {
       <div className={`app theme-${theme.id} ${settings.reduceMotion ? 'reduce-motion' : ''}`}>
         <header className="titlebar">
           <div className="title-logo">
-            <img className="title-emblem" src="./console-mark-v3.png" alt="" />
+            <img className="title-emblem" src="./astradesk-mark.png" alt="" />
             <span>{brand.name.toUpperCase()}</span>
             <span className="version">v{manifest.version}</span>
           </div>
@@ -195,7 +195,7 @@ export default function App() {
         <div className="app-shell">
           <aside className="sidebar">
             <div className="brand-mark">
-              <img src="./console-mark-v3.png" alt="AstraDesk" />
+              <img src="./astradesk-mark.png" alt="AstraDesk" />
               <div>
                 <strong>
                   ASTRA<span>DESK</span>

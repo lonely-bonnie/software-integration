@@ -209,5 +209,6 @@
   "云服务器控制台": "Cloud server console",
   "私网与设备管理": "Private network and devices",
   "公网入站、出站速率与最近 30 分钟趋势。": "Public inbound and outbound rates with a 30-minute trend.",
-  "多额度窗口、官方重置倒计时与消耗趋势。": "Multiple quota windows, official reset countdowns and usage trends."
+  "多额度窗口、官方重置倒计时与消耗趋势。": "Multiple quota windows, official reset countdowns and usage trends.",
+  "旧配置迁移失败，仍使用原数据目录；请检查数据目录权限后重启": "Legacy settings migration failed; using the original data directory. Check directory permissions and restart."
 }

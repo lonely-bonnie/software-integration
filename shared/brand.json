@@ -4,6 +4,6 @@
   "repository": "https://github.com/lonely-bonnie/software-integration",
   "releases": "https://github.com/lonely-bonnie/software-integration/releases",
   "issues": "https://github.com/lonely-bonnie/software-integration/issues",
-  "appId": "dev.riderconsole.workbench",
-  "dataDirectory": "rider-console"
+  "appId": "dev.astradesk.workbench",
+  "dataDirectory": "AstraDesk"
 }

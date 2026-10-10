@@ -15,7 +15,7 @@
 
 配置 schema 当前为 2；升级归一化旧字段，保留有效的用户主题与账户连接。新安装默认流萤。配置来自较新 schema 时拒绝导入，防止降级破坏。损坏的原设置不会自动覆盖，恢复副本在数据目录中。
 
-品牌更名后应用 ID `dev.riderconsole.workbench` 和用户数据位置 `%APPDATA%/rider-console` 保持稳定。这是历史兼容标识，不能随显示名称再次改动。默认不注册开机启动；用户保存后才写入当前用户的启动项。普通卸载清理该启动项并保留个人配置。
+应用 ID 为 `dev.astradesk.workbench`，用户数据为 `%APPDATA%/AstraDesk`。electron/data-directory.cjs 校验并原子复制旧设置与 Windows 加密凭据；保留原数据供回退，已有新目录优先，失败继续读取原目录并提示。旧数据目录只作为迁移来源记录在 shared/compatibility.json。安装器显式保留首次安装的 GUID，避免更名产生并列安装；测试核对品牌、打包配置和兼容 GUID。默认不注册开机启动；用户保存后才写入当前用户的启动项。普通卸载清理该启动项并保留个人配置。
 
 导出格式 `astradesk-profile` v1 仅包含验证后的偏好和网站。导入只加载草稿，不自动保存或注册启动项；本机 Droplet ID、Codex 路径和加密 Token 保留。
 
@@ -37,7 +37,7 @@ Token 单独 Windows DPAPI 加密保存，不进入普通 JSON、导出配置或
 
 ## 发布与验证
 
-`npm run release:win` 执行格式、核心测试、TypeScript、Vite 构建、NSIS/便携打包，保存到同级 RiderConsole/releases/版本号。版本号只在 package.json 更新，并同步 lockfile；窗口与关于页面从同一来源读取。
+`npm run release:win` 执行格式、核心测试、TypeScript、Vite 构建、NSIS/便携打包。临时产物在 AstraDesk-Dev/.build/版本号，正式安装与便携 EXE 直接在 AstraDesk-Dev/releases，登记索引和校验文件。版本号只在 package.json 更新，并同步 lockfile；窗口与关于页面从同一来源读取。拒绝覆盖已经交付的版本。[目录与版本管理](RELEASES.md) 给出发布、验证、清理约定。
 
 打包成功后还必须验证发行 EXE：全新配置启动、中英文保存重载、四主题资产、Node 隔离、安装目录选项、桌面快捷方式两种选择、开始菜单、卸载入口、重装/升级保留配置、卸载清理程序和启动项。验证数据应保存在仓库外。
 

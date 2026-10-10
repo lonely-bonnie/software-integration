@@ -13,6 +13,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const brand = require('../shared/brand.json');
+const { prepareDataDirectory } = require('./data-directory.cjs');
 const { exportProfile, importProfile } = require('./settings.cjs');
 const packageInfo = require('../package.json');
 const {
@@ -43,7 +44,7 @@ const settingsPath = () => path.join(userData(), 'settings.json');
 const tokenPath = () => path.join(userData(), 'digitalocean.enc');
 const indexPath = path.join(__dirname, '..', 'dist', 'index.html');
 const devUrl =
-  process.env.RIDER_DEV_URL === 'http://127.0.0.1:5173' ? process.env.RIDER_DEV_URL : '';
+  process.env.ASTRADESK_DEV_URL === 'http://127.0.0.1:5173' ? process.env.ASTRADESK_DEV_URL : '';
 
 function writeAtomic(file, data) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -191,7 +192,7 @@ function schedule() {
 }
 
 function applyLoginSettings(next) {
-  if (!app.isPackaged || process.env.PORTABLE_EXECUTABLE_FILE || process.env.RIDER_SMOKE_DIR)
+  if (!app.isPackaged || process.env.PORTABLE_EXECUTABLE_FILE || process.env.ASTRADESK_SMOKE_DIR)
     return;
   app.setLoginItemSettings({
     name: brand.name,
@@ -246,12 +247,12 @@ function createWindow() {
   });
   window.on('ready-to-show', () => {
     if (
-      process.env.RIDER_SMOKE_DIR ||
+      process.env.ASTRADESK_SMOKE_DIR ||
       (!settings.startMinimized && !process.argv.includes('--hidden'))
     )
       window.show();
     void refreshMetrics();
-    if (process.env.RIDER_SMOKE_DIR) {
+    if (process.env.ASTRADESK_SMOKE_DIR) {
       require('./smoke.cjs')
         .smokeCheck(window, refreshMetrics)
         .then(() => {
@@ -259,8 +260,11 @@ function createWindow() {
           app.quit();
         })
         .catch((error) => {
-          fs.mkdirSync(process.env.RIDER_SMOKE_DIR, { recursive: true });
-          fs.writeFileSync(path.join(process.env.RIDER_SMOKE_DIR, 'failure.txt'), error.message);
+          fs.mkdirSync(process.env.ASTRADESK_SMOKE_DIR, { recursive: true });
+          fs.writeFileSync(
+            path.join(process.env.ASTRADESK_SMOKE_DIR, 'failure.txt'),
+            error.message,
+          );
           quitting = true;
           app.exit(1);
         });
@@ -399,15 +403,12 @@ function registerIpc() {
   });
 }
 
-// Stable location keeps pre-rename settings and DPAPI credentials compatible.
+// Keep the installer upgrade GUID stable; runtime identity and new user data use AstraDesk.
 app.setName(brand.name);
 app.setAppUserModelId(brand.appId);
-app.setPath(
-  'userData',
-  process.env.RIDER_DATA_DIR
-    ? path.resolve(process.env.RIDER_DATA_DIR)
-    : path.join(app.getPath('appData'), brand.dataDirectory),
-);
+const dataLocation = prepareDataDirectory(app.getPath('appData'), process.env.ASTRADESK_DATA_DIR);
+app.setPath('userData', dataLocation.directory);
+configurationWarning = dataLocation.warning || '';
 const lock = app.requestSingleInstanceLock();
 if (!lock) app.quit();
 else {

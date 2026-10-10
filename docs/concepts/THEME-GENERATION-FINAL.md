@@ -1,22 +1,22 @@
 # 四主题与独立软件图标生成记录
 
-2026-10-10，Rider Console 0.1.2。所有最终图由内置 image_gen 生成并保存到 public；旧草案保留在 docs/concepts/drafts。软件标识独立于主题，使用透明背景；角色主题图是生成的同人概念美术，并非游戏官方素材或精确的游戏内皮肤复刻。
+2026-10-10，Rider Console 0.1.2。所有最终图由内置 image_gen 生成并保存到 public。0.2.1 已清理未采用的草案和参考帧，历史过程可从 Git 追溯；下方精确提示词保留生成当时的原文。软件标识独立于主题，使用透明背景；角色主题图是生成的同人概念美术，并非游戏官方素材或精确的游戏内皮肤复刻。
 
 ## 视觉与视频依据
 
-- Gauss 实际观看并检查：[追动与原皮配色展示](https://www.bilibili.com/video/BV11V411x7aB/) 的约 00:52 运动帧，白银、青蓝能量、前倾加速姿态。参考帧仅保留在本机工具目录。
+- Gauss 实际观看并检查：[追动与原皮配色展示](https://www.bilibili.com/video/BV11V411x7aB/) 的约 00:52 运动帧，白银、青蓝能量、前倾加速姿态。当时检查的参考帧未打包，整理时已清理。
 - Gauss 实际观看并检查：[Gauss Prime 追动外观配色](https://www.bilibili.com/video/BV1fT4y187Fs/) 的约 00:10 白金外观片段，取金属层次与少量金色点缀，不采用大面积背翼。未宣称完整观看两段视频。
 - 另外检索到 [Kresnik 皮肤比较](https://www.youtube.com/watch?v=VfT2j3e-bTI)、[Moto 皮肤比较](https://www.youtube.com/watch?v=Xmwv9f7bbaQ)。页面访问/播放不稳定，未作为实际观看的参考。[官方 Devstream 192](https://www.warframe.com/en/news/resume-devstream-192) 确认有新 Gauss Deluxe 展示。
 - Gauss Prime 身份参考：[warframe-items 模型图](https://raw.githubusercontent.com/wfcd/warframe-items/master/data/img/GaussPrime.png)。最终是白银青蓝的追动风格与 Prime 细节融合概念，采用高速冲刺、动能轨迹与热能爆发，取消此前 2077 静态城市方向。
 - 流萤身份参考：[角色介绍](https://www.hoyolab.com/article/29770753)、[宣传参考图转载](https://megapx-assets.dcard.tw/images/ce15a47f-a3c2-49b2-8860-e7badb546b2d/1280.jpeg)。原参考不打包。最终暖色日光花园。
 - 深海方向：[Subnautica 官方截图](https://unknownworlds.com/en/news/subnautica-revealed)。最终提亮为透光海底。
-- 骑士以用户已选 [A 主体与 F 眼部融合](AF-FUSION-PROMPT.md) 为编辑目标，保留装甲身份，改为末日守护者与破云晨光，取消荒漠废土方向。
+- 骑士以用户已选 A 主体与 F 眼部融合方案 为编辑目标，保留装甲身份，改为末日守护者与破云晨光，取消荒漠废土方向。
 
 ## 最终资产
 
 | 资产           | 路径                                |
 | -------------- | ----------------------------------- |
-| 独立透明图标   | public/console-icon-v3.png          |
+| 独立透明图标   | public/astradesk-icon.png           |
 | 骑士守护者     | public/themes/rider-daybreak-v4.png |
 | 透光海底       | public/themes/abyss-daylight-v2.png |
 | Gauss 动能冲刺 | public/themes/gauss-kinetic-v3.png  |

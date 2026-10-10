@@ -37,13 +37,13 @@ if (typeof electron === 'string') {
   const { app, nativeImage } = electron;
   app.whenReady().then(() => {
     try {
-      const artwork = nativeImage.createFromPath(path.join(root, 'public', 'console-icon-v3.png'));
+      const artwork = nativeImage.createFromPath(path.join(root, 'public', 'astradesk-icon.png'));
       if (artwork.isEmpty()) throw new Error('Application emblem is missing');
       if (artwork.toBitmap()[3] !== 0)
         throw new Error('Application emblem must preserve transparency');
       const png = (width) => artwork.resize({ width, height: width, quality: 'best' }).toPNG();
       fs.mkdirSync(path.join(root, 'build'), { recursive: true });
-      fs.writeFileSync(path.join(root, 'public', 'console-mark-v3.png'), png(128));
+      fs.writeFileSync(path.join(root, 'public', 'astradesk-mark.png'), png(128));
       fs.writeFileSync(path.join(root, 'electron', 'app-icon.png'), png(256));
       fs.writeFileSync(path.join(root, 'electron', 'tray.png'), png(32));
       const sizes = [256, 48, 32, 16];

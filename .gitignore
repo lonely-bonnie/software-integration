@@ -2,6 +2,9 @@ node_modules/
 dist/
 out/
 release/
+/releases/
+.build/
+.validation/
 .env
 .env.*
 !.env.example

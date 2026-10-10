@@ -1,6 +1,6 @@
 # 首版实现与扩展指南
 
-版本 0.1.2，2026-10-10。源码、运行环境和用户数据分别存放。
+版本 0.2.1，2026-10-10。源码、运行环境和用户数据分别存放。
 
 ## 当前实现
 
@@ -10,7 +10,7 @@
 - `src/App.tsx`：控制中心、模块开关、设置及主题预览；`src/styles.css`：四主题语义配色与布局。
 - `src/types.ts`：快照、额度窗口、流量、配置和桥接接口。
 - `shared/themes.json`：四主题名称、资源和配色提示；界面与主进程共享合法主题 ID。`src/themes.ts` 提供检索、未知值回退和旧 Arctic 到 abyss 的迁移。
-- `public/themes/`：骑士晨光、透光海底、Gauss 动能、暖色流萤；`public/console-icon-v3.png` 为独立透明软件标识。缩放产生 console-mark-v3、app-icon、tray 与 Windows ICO。
+- `public/themes/`：骑士晨光、透光海底、Gauss 动能、暖色流萤；`public/astradesk-icon.png` 为独立透明软件标识。缩放产生 astradesk-mark、app-icon、tray 与 Windows ICO。
 
 主题选择只改变设置草稿与本页预览，保存后通过既有设置 IPC 持久化；离开页面丢弃未保存修改并回到保存主题。主题不改变监控口径。背景、面板、输入、图表、侧栏、状态与错误提示都使用语义 CSS 变量，浅色方案使用深色文字；各主题还调整面板圆角。新增主题需同时更新 manifest、ThemeId、CSS 与资源。角色图为生成概念，实际参考片段、原图与最终提示词见 [生成记录](concepts/THEME-GENERATION-FINAL.md)。
 
@@ -34,10 +34,10 @@ Codex 每次启动独立的 App Server stdio 客户端，依次 initialize / ini
 
 ## 隔离与验证
 
-项目不修改系统 PATH、现有 Node、Python、Conda 或 Codex 配置。依赖使用锁文件；本机安装依赖位于 RiderConsole development 目录，通过源码下的 node_modules 目录联接使用。其他电脑可在源码目录正常 npm ci。
+项目不修改系统 PATH、现有 Node、Python、Conda 或 Codex 配置。依赖使用锁文件；本机安装依赖位于 AstraDesk-Dev/development 目录，通过源码下的 node_modules 目录联接使用。其他电脑可在源码目录正常 npm ci。
 
 开发时 `npm run dev:desktop`；生产构建 `npm run portable:win`。图标通过 `npm run icons` 重建，使用项目已有 Electron nativeImage 缩放透明独立标识，无额外图像依赖。Windows 使用隐藏的 Start-Process 启动图标生成，避免同步子进程的 Chromium job-object 限制。主图放在首页右侧、保持完整高度并在左侧渐隐，最小 940px 桌面窗口仍显示图片并保持正文可读。
 
-开发诊断支持进程环境变量 RIDER_SMOKE_DIR 与 RIDER_DATA_DIR，二者必须一起指定。软件将读取自身 DOM、验证 IPC 和 Node 隔离、获取实际数据、保存本地截图及脱敏健康信息后退出。诊断文件留在运行目录外的 validation 下，不提交到公共仓库。
+开发诊断支持进程环境变量 ASTRADESK_SMOKE_DIR 与 ASTRADESK_DATA_DIR，二者必须一起指定。软件将读取自身 DOM、验证 IPC 和 Node 隔离、获取实际数据、保存本地截图及脱敏健康信息后退出。诊断文件留在AstraDesk-Dev/.validation 下，验收后通过 npm run clean 清理，不提交到公共仓库。
 
 发布前执行 npm test、npm run build、实际打包软件启动诊断，并检查演示数据、空值、陈旧数据、凭据隔离与来源验证。DO 的真实联网验收需要用户在桌面设置页填入自己的只读 Token 和 Droplet ID；凭据不应写到源码或公共 issue。

@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld(
-  'rider',
+  'astraDesk',
   Object.freeze({
     getInfo: () => ipcRenderer.invoke('app:info'),
     openSupport: (target) => ipcRenderer.invoke('app:support', target),

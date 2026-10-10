@@ -33,7 +33,7 @@ vite.on('exit', (code) => {
         cwd: root,
         stdio: 'inherit',
         windowsHide: true,
-        env: { ...process.env, RIDER_DEV_URL: 'http://127.0.0.1:5173' },
+        env: { ...process.env, ASTRADESK_DEV_URL: 'http://127.0.0.1:5173' },
       });
       desktop.on('error', (error) => {
         console.error(error.message);
