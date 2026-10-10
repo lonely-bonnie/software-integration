@@ -320,7 +320,11 @@ async function codexQuota(customPath = '', dependencies = {}) {
     (async () => {
       try {
         await request('initialize', {
-          clientInfo: { name: 'rider_console', title: 'Rider Console', version: '0.1.0' },
+          clientInfo: {
+            name: 'rider_console',
+            title: 'Rider Console',
+            version: require('../package.json').version,
+          },
         });
         child.stdin.write(JSON.stringify({ method: 'initialized' }) + '\n');
         const account = await request('account/read', { refreshToken: false });

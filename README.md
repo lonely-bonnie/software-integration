@@ -1,6 +1,6 @@
 # Rider Console · Windows 软件集成中心
 
-一个可扩展的桌面工作台，把常用网站、服务器流量与 Codex 额度放在同一界面。当前版本 **0.1.0**，使用 Electron + React + TypeScript，提供原创红绿装甲主题和蓝色 Arctic 主题。
+一个可扩展的桌面工作台，把常用网站、服务器流量与 Codex 额度放在同一界面。当前版本 **0.1.1**，使用 Electron + React + TypeScript，首页采用黑红金属装甲与蓝色锐角面屏，提供装甲主题和蓝色 Arctic 主题。
 
 ![装甲主题界面，监控数字为演示数据](docs/assets/dashboard-demo.jpg)
 
@@ -16,7 +16,7 @@
 
 ## 使用
 
-Windows x64 便携版运行 `RiderConsole-0.1.0-portable.exe`，或者运行展开目录中的 `Rider Console.exe`。初版未签名，尚未做安装器和自动更新。
+Windows x64 便携版运行 `RiderConsole-0.1.1-portable.exe`，或者运行展开目录中的 `Rider Console.exe`。本机桌面已有 `Rider Console` 快捷方式，指向固定的展开目录。初版未签名，尚未做安装器和自动更新。
 
 1. 打开工作台即可点击网站卡片。
 2. 在“系统设置”填入 DO Droplet ID 与包含 `monitoring:read` 权限的只读 Token，保存后读取流量。
@@ -28,13 +28,13 @@ DO 指标为云端**准实时监控**，采样延迟需以实际接口返回为�
 
 ## 本机目录
 
-| 用途 | 路径 |
-| --- | --- |
-| Git 源码 | `D:\software\software_integration` |
-| 便携软件与展开版本 | `D:\software\RiderConsole\releases` |
-| 独立开发依赖 | `D:\software\RiderConsole\development` |
-| 工具与缓存 | `D:\software\RiderConsole\tooling` |
-| 私有验证证据 | `D:\software\RiderConsole\validation` |
+| 用途               | 路径                                   |
+| ------------------ | -------------------------------------- |
+| Git 源码           | `D:\software\software_integration`     |
+| 便携软件与展开版本 | `D:\software\RiderConsole\releases`    |
+| 独立开发依赖       | `D:\software\RiderConsole\development` |
+| 工具与缓存         | `D:\software\RiderConsole\tooling`     |
+| 私有验证证据       | `D:\software\RiderConsole\validation`  |
 
 工具不修改系统 PATH 或既有 Node、Python、Conda、Codex 配置。运行时设置由 Electron 保存到当前用户的应用数据目录，独立于源码和发行文件。凭据与验证数据不提交到公共仓库。
 
@@ -67,4 +67,4 @@ npm run portable:win # 便携 EXE
 - [开源项目调研](docs/OPEN_SOURCE_RESEARCH.md)：vnStat、Beszel、Netdata 与 DO 专用看板选型。
 - 官方依据：[DigitalOcean Monitoring API](https://docs.digitalocean.com/reference/api/reference/monitoring/)、[Codex App Server](https://developers.openai.com/codex/app-server)、[Electron safeStorage](https://www.electronjs.org/docs/latest/api/safe-storage)。
 
-视觉参考 [Arwes](https://github.com/arwes/arwes) 和 [Astro Sci-Fi UI](https://github.com/jonnysmillie/astro-sci-fi-ui) 的科幻层次与面板组织；界面、SVG 头盔和图标为本项目原创，没有复制其代码或具体作品角色素材。
+界面层次参考 [Arwes](https://github.com/arwes/arwes) 和 [Astro Sci-Fi UI](https://github.com/jonnysmillie/astro-sci-fi-ui)。0.1.1 主视觉使用内置 image_gen 编辑，按 A 的黑红装甲主体融合 F 的眼部方向；侧栏、Windows 与托盘图标从该图派生。候选与选择记录见 [视觉方案](docs/VISUAL_CONCEPTS.md)，精确提示词见 [融合提示词](docs/concepts/AF-FUSION-PROMPT.md)。

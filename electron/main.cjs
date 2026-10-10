@@ -181,7 +181,7 @@ function createWindow() {
     minWidth: 940,
     minHeight: 680,
     title: 'Rider Console',
-    icon: path.join(__dirname, 'tray.png'),
+    icon: path.join(__dirname, 'app-icon.png'),
     backgroundColor: '#0e1115',
     frame: false,
     autoHideMenuBar: true,
@@ -224,7 +224,7 @@ function createWindow() {
   });
   if (devUrl) window.loadURL(devUrl);
   else window.loadFile(indexPath);
-  // A small original red/green emblem is rendered locally for the notification area.
+  // The small notification-area icon is derived from the local hero artwork.
   const iconSvg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" rx="8" fill="#171c22"/><path d="M5 12l9-4v11L5 17zm22 0-9-4v11l9-2z" fill="#a9df70"/><path d="M15 5h2v22h-2z" fill="#ef5149"/></svg>';
   const sharpIcon = path.join(__dirname, 'tray.png');

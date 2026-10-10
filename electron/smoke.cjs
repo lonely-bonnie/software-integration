@@ -20,7 +20,7 @@ async function smokeCheck(window, refreshMetrics) {
     bridgeAvailable: typeof window.rider?.getSettings === 'function',
     ipcSettingsReadable: typeof settings.digitalOcean.tokenConfigured === 'boolean',
     nodeAvailable: typeof window.require !== 'undefined',
-    helmetLoaded: [...document.images].every(image => image.complete && image.naturalWidth > 0)
+    artworkLoaded: [...document.images].every(image => image.complete && image.naturalWidth > 0)
   }); })()`);
   const snapshot = await refreshMetrics();
   if (
@@ -28,7 +28,7 @@ async function smokeCheck(window, refreshMetrics) {
     !renderer.bridgeAvailable ||
     !renderer.ipcSettingsReadable ||
     renderer.nodeAvailable ||
-    !renderer.helmetLoaded ||
+    !renderer.artworkLoaded ||
     !snapshot
   )
     throw new Error('Renderer or bridge health check failed');

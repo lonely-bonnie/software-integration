@@ -1,6 +1,6 @@
 # 首版实现与扩展指南
 
-版本 0.1.0，2026-10-10。源码、运行环境和用户数据分别存放。
+版本 0.1.1，2026-10-10。源码、运行环境和用户数据分别存放。
 
 ## 当前实现
 
@@ -9,7 +9,7 @@
 - `electron/preload.cjs`：受控接口，界面不能直接使用 Node 或读取凭据。
 - `src/App.tsx`：控制中心、模块开关、设置；`src/styles.css`：装甲主题。
 - `src/types.ts`：快照、额度窗口、流量、配置和桥接接口。
-- `public/helmet.svg`、`build/icon.ico`：原创装甲标识。
+- `public/rider-hero-v2.png`：A 主体与 F 眼部方向的融合主视觉；`public/rider-mark-v2.png`、`electron/app-icon.png`、`electron/tray.png` 和 `build/icon.ico`：从主视觉派生的标识与图标。
 
 普通配置保存在 Electron 用户目录 `settings.json`；DO Token 经 Electron safeStorage / Windows DPAPI 加密后单独保存。界面只能获知是否已配置，不会取得保存的 Token。浏览器预览使用独立的本地演示配置，不能输入真实 Token。
 
@@ -33,7 +33,7 @@ Codex 每次启动独立的 App Server stdio 客户端，依次 initialize / ini
 
 项目不修改系统 PATH、现有 Node、Python、Conda 或 Codex 配置。依赖使用锁文件；本机安装依赖位于 RiderConsole development 目录，通过源码下的 node_modules 目录联接使用。其他电脑可在源码目录正常 npm ci。
 
-开发时 `npm run dev:desktop`；生产构建 `npm run portable:win`。图标可通过 `node scripts/create-icon.cjs` 重建。
+开发时 `npm run dev:desktop`；生产构建 `npm run portable:win`。图标通过 `npm run icons` 重建，使用项目已有 Electron nativeImage 裁切与缩放，无额外图像依赖。Windows 使用隐藏的 Start-Process 启动图标生成，避免同步子进程的 Chromium job-object 限制。主图放在首页右侧并在左侧叠加渐变，最小 940px 桌面窗口仍显示图片并保持正文可读。
 
 开发诊断支持进程环境变量 RIDER_SMOKE_DIR 与 RIDER_DATA_DIR，二者必须一起指定。软件将读取自身 DOM、验证 IPC 和 Node 隔离、获取实际数据、保存本地截图及脱敏健康信息后退出。诊断文件留在运行目录外的 validation 下，不提交到公共仓库。
 

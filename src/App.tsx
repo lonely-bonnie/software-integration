@@ -311,7 +311,7 @@ export default function App() {
         <div className="title-logo">
           <Shield size={15} />
           <span>RIDER CONSOLE</span>
-          <span className="version">v0.1.0</span>
+          <span className="version">v0.1.1</span>
         </div>
         <div className="title-caption">MODULAR DESKTOP WORKBENCH</div>
         <div className="window-buttons">
@@ -333,7 +333,7 @@ export default function App() {
       <div className="app-shell">
         <aside className="sidebar">
           <div className="brand-mark">
-            <img src="./helmet.svg" alt="原创装甲头盔标识" />
+            <img src="./rider-mark-v2.png" alt="黑红装甲与蓝色面屏标识" />
             <div>
               <strong>
                 RIDER<span>CONSOLE</span>
@@ -440,6 +440,7 @@ export default function App() {
           {page === 'dashboard' && (
             <>
               <section className="hero">
+                <img className="hero-art" src="./rider-hero-v2.png" alt="" aria-hidden="true" />
                 <div className="hero-copy">
                   <div className="hero-tag">
                     <i />
@@ -466,15 +467,8 @@ export default function App() {
                     </span>
                   </div>
                 </div>
-                <div className="hero-visual" aria-hidden="true">
-                  <div className="helmet-orbit orbit-outer" />
-                  <div className="helmet-orbit orbit-inner" />
-                  <div className="helmet-crosshair" />
-                  <img src="./helmet.svg" alt="" />
-                  <div className="armor-label">
-                    RIDER SYSTEM<span>INITIALIZED / 001</span>
-                  </div>
-                  <span className="hero-coordinate">NODE 01 / DESKTOP</span>
+                <div className="armor-label" aria-hidden="true">
+                  RIDER SYSTEM<span>BLACK / RED / PRECISION</span>
                 </div>
               </section>
               <div className="section-title">
@@ -675,7 +669,7 @@ export default function App() {
                   LOCAL WORKSPACE
                 </span>
                 <p>观测流量与官方计费分别展示。桌宠接口已预留。</p>
-                <span>v0.1.0 / FIRST IGNITION</span>
+                <span>v0.1.1 / PRECISION VISOR</span>
               </div>
             </>
           )}
