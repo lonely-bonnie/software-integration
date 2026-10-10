@@ -9,12 +9,18 @@ const providers = require('../electron/providers.cjs');
 function harness(overrides = {}) {
   const handlers = {},
     sent = [],
-    files = new Map();
+    files = new Map(),
+    loginItems = [];
   const frame = { url: pathToFileURL(path.join(__dirname, '..', 'dist', 'index.html')).href };
   const contents = { mainFrame: frame, send: (_channel, payload) => sent.push(payload) };
   const electron = {
     app: {
       getPath: () => '/isolated-test',
+      setPath: () => {},
+      setName: () => {},
+      setAppUserModelId: () => {},
+      isPackaged: true,
+      setLoginItemSettings: (value) => loginItems.push(value),
       requestSingleInstanceLock: () => false,
       quit: () => {},
     },
@@ -28,6 +34,9 @@ function harness(overrides = {}) {
       encryptString: (value) => Buffer.from(value),
     },
     shell: { openExternal: async () => {} },
+    dialog: {
+      showSaveDialog: async () => ({ filePath: '/isolated-test/profile.json', canceled: false }),
+    },
   };
   const sandbox = {
     require: (name) =>
@@ -46,9 +55,11 @@ function harness(overrides = {}) {
                 existsSync: (file) => files.has(file),
                 unlinkSync: (file) => files.delete(file),
               }
-            : require(name),
+            : name.startsWith('.')
+              ? require(path.resolve(__dirname, '../electron', name))
+              : require(name),
     __dirname: path.join(__dirname, '..', 'electron'),
-    process: { env: {} },
+    process: { env: {}, execPath: '/apps/AstraDesk.exe', platform: 'win32' },
     structuredClone,
     URL,
     Buffer,
@@ -74,6 +85,7 @@ function harness(overrides = {}) {
     event,
     sent,
     files,
+    loginItems,
   };
 }
 
@@ -126,5 +138,30 @@ test('Token 不进入公开设置或设置文件，删除后配置状态清除',
   assert.ok(!settings.includes('test-only-secret'));
   h.invoke('token:remove');
   assert.equal(h.invoke('settings:get').digitalOcean.tokenConfigured, false);
+  await new Promise((resolve) => setImmediate(resolve));
+});
+
+test('启动设置通过受控 IPC 注册当前 EXE，关闭时移除；配置导出无账户数据', async () => {
+  const h = harness({
+    codexQuota: async () => ({ status: 'unavailable', buckets: [], sampledAt: null }),
+  });
+  await h.invoke(
+    'settings:save',
+    { ...providers.DEFAULT_SETTINGS, launchAtLogin: true, startMinimized: true },
+    'test-only-secret',
+  );
+  assert.equal(h.loginItems.length, 1);
+  assert.equal(h.loginItems[0].name, 'AstraDesk');
+  assert.equal(h.loginItems[0].path, '/apps/AstraDesk.exe');
+  assert.equal(h.loginItems[0].openAtLogin, true);
+  assert.deepEqual([...h.loginItems[0].args], ['--hidden']);
+  await h.invoke('settings:export');
+  const profile = JSON.parse(h.files.get('/isolated-test/profile.json'));
+  assert.equal(profile.format, 'astradesk-profile');
+  assert.ok(!JSON.stringify(profile).includes('test-only-secret'));
+  assert.equal(profile.preferences.digitalOcean, undefined);
+  assert.equal(profile.preferences.codexPath, undefined);
+  await h.invoke('settings:save', providers.DEFAULT_SETTINGS);
+  assert.equal(h.loginItems[1].openAtLogin, false);
   await new Promise((resolve) => setImmediate(resolve));
 });

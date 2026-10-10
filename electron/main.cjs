@@ -7,10 +7,14 @@ const {
   ipcMain,
   shell,
   safeStorage,
+  dialog,
 } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
+const brand = require('../shared/brand.json');
+const { exportProfile, importProfile } = require('./settings.cjs');
+const packageInfo = require('../package.json');
 const {
   DEFAULT_SETTINGS,
   validateSettings,
@@ -33,6 +37,7 @@ let window,
   codexCached = null,
   retryUntil = 0,
   revision = 0;
+let configurationWarning = '';
 const userData = () => app.getPath('userData');
 const settingsPath = () => path.join(userData(), 'settings.json');
 const tokenPath = () => path.join(userData(), 'digitalocean.enc');
@@ -51,7 +56,18 @@ function loadSettings() {
       ...DEFAULT_SETTINGS,
       ...JSON.parse(fs.readFileSync(settingsPath(), 'utf8')),
     });
-  } catch {
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      configurationWarning = '配置读取失败，已使用默认偏好；原文件已保留，请检查数据目录';
+      try {
+        fs.copyFileSync(
+          settingsPath(),
+          path.join(userData(), `settings-recovery-${Date.now()}.json`),
+        );
+      } catch {
+        /* Keep original untouched even if recovery copy fails. */
+      }
+    }
     return structuredClone(DEFAULT_SETTINGS);
   }
 }
@@ -174,15 +190,45 @@ function schedule() {
   timer = setInterval(() => void refreshMetrics(), settings.refreshSeconds * 1000);
 }
 
+function applyLoginSettings(next) {
+  if (!app.isPackaged || process.env.PORTABLE_EXECUTABLE_FILE || process.env.RIDER_SMOKE_DIR)
+    return;
+  app.setLoginItemSettings({
+    name: brand.name,
+    openAtLogin: next.launchAtLogin,
+    path: process.execPath,
+    args: next.startMinimized ? ['--hidden'] : [],
+  });
+}
+function updateTray() {
+  if (!tray) return;
+  const en = settings.language === 'en';
+  tray.setToolTip(brand.name);
+  tray.setContextMenu(
+    Menu.buildFromTemplate([
+      { label: en ? 'Open workspace' : '打开工作台', click: showWindow },
+      { label: en ? 'Refresh data' : '刷新数据', click: () => void refreshMetrics() },
+      { type: 'separator' },
+      {
+        label: en ? 'Quit' : '退出',
+        click: () => {
+          quitting = true;
+          app.quit();
+        },
+      },
+    ]),
+  );
+}
+
 function createWindow() {
   window = new BrowserWindow({
     width: 1440,
     height: 970,
     minWidth: 940,
     minHeight: 680,
-    title: 'Rider Console',
+    title: brand.name,
     icon: path.join(__dirname, 'app-icon.png'),
-    backgroundColor: '#0e1115',
+    backgroundColor: '#fff8ee',
     frame: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -199,7 +245,11 @@ function createWindow() {
       event.preventDefault();
   });
   window.on('ready-to-show', () => {
-    window.show();
+    if (
+      process.env.RIDER_SMOKE_DIR ||
+      (!settings.startMinimized && !process.argv.includes('--hidden'))
+    )
+      window.show();
     void refreshMetrics();
     if (process.env.RIDER_SMOKE_DIR) {
       require('./smoke.cjs')
@@ -234,21 +284,7 @@ function createWindow() {
         'data:image/svg+xml;base64,' + Buffer.from(iconSvg).toString('base64'),
       );
   tray = new Tray(icon);
-  tray.setToolTip('Rider Console · 软件集成中心');
-  tray.setContextMenu(
-    Menu.buildFromTemplate([
-      { label: '打开工作台', click: showWindow },
-      { label: '刷新数据', click: () => void refreshMetrics() },
-      { type: 'separator' },
-      {
-        label: '退出',
-        click: () => {
-          quitting = true;
-          app.quit();
-        },
-      },
-    ]),
-  );
+  updateTray();
   tray.on('double-click', showWindow);
   schedule();
 }
@@ -260,23 +296,73 @@ function registerIpc() {
       return handler(...args);
     });
   handle('settings:get', () => publicSettings());
+  handle('app:info', () => ({
+    name: brand.name,
+    version: packageInfo.version,
+    packaged: app.isPackaged,
+    startupAvailable: app.isPackaged && !process.env.PORTABLE_EXECUTABLE_FILE,
+    platform: process.platform,
+    dataDirectory: userData(),
+    releases: brand.releases,
+    issues: brand.issues,
+    configurationWarning,
+  }));
+  handle('app:support', async (target) => {
+    if (target === 'data') {
+      const failure = await shell.openPath(userData());
+      if (failure) throw new Error('无法打开数据目录');
+    } else if (target === 'releases' || target === 'issues')
+      await shell.openExternal(brand[target]);
+    else throw new Error('无效的界面请求');
+  });
+  handle('settings:export', async () => {
+    const result = await dialog.showSaveDialog(window, {
+      defaultPath: 'AstraDesk-profile.json',
+      filters: [{ name: 'AstraDesk profile', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return false;
+    writeAtomic(result.filePath, JSON.stringify(exportProfile(settings), null, 2));
+    return true;
+  });
+  handle('settings:import', async () => {
+    const result = await dialog.showOpenDialog(window, {
+      properties: ['openFile'],
+      filters: [{ name: 'AstraDesk profile', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePaths[0]) return null;
+    const file = result.filePaths[0];
+    if (fs.statSync(file).size > 256 * 1024) throw new Error('配置文件过大');
+    return {
+      ...importProfile(JSON.parse(fs.readFileSync(file, 'utf8')), settings),
+      digitalOcean: publicSettings().digitalOcean,
+    };
+  });
   handle('settings:save', async (input, newToken) => {
     const next = validateSettings(input);
+    let encrypted;
     if (newToken !== undefined && newToken !== '') {
       if (typeof newToken !== 'string' || newToken.length > 1024 || !/^\S+$/.test(newToken))
         throw new Error('Token 格式无效');
       if (!safeStorage.isEncryptionAvailable()) throw new Error('当前系统无法加密凭据，尚未保存');
-      const encrypted = safeStorage.encryptString(newToken.trim());
+      encrypted = safeStorage.encryptString(newToken.trim());
+    }
+    if (
+      next.launchAtLogin !== settings.launchAtLogin ||
+      next.startMinimized !== settings.startMinimized
+    )
+      applyLoginSettings(next);
+    writeAtomic(settingsPath(), JSON.stringify(next, null, 2));
+    if (encrypted) {
       writeAtomic(tokenPath(), encrypted);
       token = newToken.trim();
     }
     settings = next;
+    updateTray();
     revision++;
     codexCached = null;
     quotaSamples = [];
     previous = null;
     retryUntil = 0;
-    writeAtomic(settingsPath(), JSON.stringify(settings, null, 2));
     schedule();
     void refreshMetrics();
     return publicSettings();
@@ -313,13 +399,28 @@ function registerIpc() {
   });
 }
 
-if (process.env.RIDER_DATA_DIR) app.setPath('userData', path.resolve(process.env.RIDER_DATA_DIR));
+// Stable location keeps pre-rename settings and DPAPI credentials compatible.
+app.setName(brand.name);
+app.setAppUserModelId(brand.appId);
+app.setPath(
+  'userData',
+  process.env.RIDER_DATA_DIR
+    ? path.resolve(process.env.RIDER_DATA_DIR)
+    : path.join(app.getPath('appData'), brand.dataDirectory),
+);
 const lock = app.requestSingleInstanceLock();
 if (!lock) app.quit();
 else {
   app.on('second-instance', showWindow);
   app.whenReady().then(() => {
     settings = loadSettings();
+    if (settings.launchAtLogin) {
+      try {
+        applyLoginSettings(settings);
+      } catch {
+        configurationWarning = '无法注册开机启动，可在设置中关闭并重新开启';
+      }
+    }
     try {
       if (safeStorage.isEncryptionAvailable() && fs.existsSync(tokenPath()))
         token = safeStorage.decryptString(fs.readFileSync(tokenPath()));

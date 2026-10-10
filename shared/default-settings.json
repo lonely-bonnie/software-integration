@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "language": "zh-CN",
+  "timeZone": "local",
+  "theme": "anime",
+  "unit": "Mbps",
+  "refreshSeconds": 60,
+  "demoMode": false,
+  "closeToTray": true,
+  "launchAtLogin": false,
+  "startMinimized": false,
+  "reduceMotion": false,
+  "modules": { "traffic": true, "codex": true },
+  "websites": [
+    {
+      "id": "digitalocean",
+      "name": "DigitalOcean",
+      "subtitle": "云服务器控制台",
+      "url": "https://cloud.digitalocean.com/"
+    },
+    {
+      "id": "tailscale",
+      "name": "Tailscale",
+      "subtitle": "私网与设备管理",
+      "url": "https://console.tailscale.com/admin/"
+    }
+  ],
+  "digitalOcean": { "dropletId": "", "tokenConfigured": false },
+  "codexPath": ""
+}

@@ -1,0 +1,9 @@
+{
+  "name": "AstraDesk",
+  "tagline": "向星辰大海，连接你的工作世界。",
+  "repository": "https://github.com/lonely-bonnie/software-integration",
+  "releases": "https://github.com/lonely-bonnie/software-integration/releases",
+  "issues": "https://github.com/lonely-bonnie/software-integration/issues",
+  "appId": "dev.riderconsole.workbench",
+  "dataDirectory": "rider-console"
+}

@@ -15,6 +15,50 @@
 }
 body {
   margin: 0;
+  background: #fff8ee;
+}
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.about-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 20px 0 12px;
+}
+.about-brand strong {
+  font-size: 25px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.about-brand span {
+  color: var(--muted);
+}
+.general-settings .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 button,
 input,

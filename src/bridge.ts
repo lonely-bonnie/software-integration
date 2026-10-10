@@ -1,30 +1,10 @@
 import type { Bridge, Settings, Snapshot } from './types';
 import { normalizeTheme } from './themes';
 
-export const defaultSettings: Settings = {
-  unit: 'Mbps',
-  theme: 'rider',
-  demoMode: false,
-  refreshSeconds: 60,
-  modules: { traffic: true, codex: true },
-  websites: [
-    {
-      id: 'digitalocean',
-      name: 'DigitalOcean',
-      subtitle: '云服务器控制台',
-      url: 'https://cloud.digitalocean.com/',
-    },
-    {
-      id: 'tailscale',
-      name: 'Tailscale',
-      subtitle: '私网与设备管理',
-      url: 'https://console.tailscale.com/admin/',
-    },
-  ],
-  digitalOcean: { dropletId: '', tokenConfigured: false },
-  codexPath: '',
-  closeToTray: true,
-};
+import defaults from '../shared/default-settings.json';
+import brand from '../shared/brand.json';
+import manifest from '../package.json';
+export const defaultSettings = defaults as Settings;
 export function makePreview(): Snapshot {
   const now = Date.now();
   const points = (offset: number) =>
@@ -85,8 +65,24 @@ try {
 } catch {
   previewSettings = { ...defaultSettings, demoMode: true };
 }
+previewSettings = { ...defaultSettings, ...previewSettings };
 previewSettings.theme = normalizeTheme(previewSettings.theme);
 const preview: Bridge = {
+  getInfo: async () => ({
+    name: brand.name,
+    version: manifest.version,
+    packaged: false,
+    startupAvailable: false,
+    platform: 'browser',
+    dataDirectory: '',
+    releases: brand.releases,
+    issues: brand.issues,
+  }),
+  openSupport: async (target) => {
+    if (target !== 'data') window.open(brand[target], '_blank', 'noopener,noreferrer');
+  },
+  exportSettings: async () => false,
+  importSettings: async () => null,
   getSettings: async () => structuredClone(previewSettings),
   saveSettings: async (settings) => {
     previewSettings = {

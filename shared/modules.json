@@ -1,0 +1,18 @@
+[
+  {
+    "id": "traffic",
+    "name": "DigitalOcean 流量",
+    "description": "公网入站、出站速率与最近 30 分钟趋势。",
+    "capability": "MONITORING API",
+    "provider": "digitalOceanTraffic",
+    "snapshotKey": "traffic"
+  },
+  {
+    "id": "codex",
+    "name": "Codex 额度",
+    "description": "多额度窗口、官方重置倒计时与消耗趋势。",
+    "capability": "LOCAL APP SERVER",
+    "provider": "codexQuota",
+    "snapshotKey": "codex"
+  }
+]

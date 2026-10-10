@@ -19,6 +19,9 @@ async function smokeCheck(window, refreshMetrics) {
     heading: document.querySelector('h1')?.textContent,
     bridgeAvailable: typeof window.rider?.getSettings === 'function',
     ipcSettingsReadable: typeof settings.digitalOcean.tokenConfigured === 'boolean',
+    theme: settings.theme,
+    language: settings.language,
+    schemaVersion: settings.schemaVersion,
     nodeAvailable: typeof window.require !== 'undefined',
     artworkLoaded: [...document.images].every(image => image.complete && image.naturalWidth > 0)
   }); })()`);
@@ -29,7 +32,7 @@ async function smokeCheck(window, refreshMetrics) {
   }))).then(results => results.length === 4 && results.every(Boolean))`);
   const snapshot = await refreshMetrics();
   if (
-    !renderer.heading?.includes('控制中心') ||
+    !/控制中心|Overview/.test(renderer.heading || '') ||
     !renderer.bridgeAvailable ||
     !renderer.ipcSettingsReadable ||
     renderer.nodeAvailable ||
@@ -38,6 +41,25 @@ async function smokeCheck(window, refreshMetrics) {
     !snapshot
   )
     throw new Error('Renderer or bridge health check failed');
+  const bilingual = await window.webContents.executeJavaScript(`(async () => {
+    const initial = await window.rider.getSettings();
+    const nav = () => [...document.querySelectorAll('nav button')];
+    nav()[2].click();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const language = document.querySelector('select[aria-label="界面语言"],select[aria-label="Interface language"]');
+    if (!language) throw new Error('Language setting missing');
+    const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+    setter.call(language, 'en'); language.dispatchEvent(new Event('change', { bubbles: true }));
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const settingsEnglish = document.querySelector('h1').textContent.includes('Settings');
+    const untranslated = (document.querySelector('main').innerText.match(/[\\u4e00-\\u9fff]+/g) || []).filter(text => text !== '简体中文');
+    language.value = initial.language; language.dispatchEvent(new Event('change', { bubbles: true }));
+    nav()[0].click();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    return { settingsEnglish, untranslated, initialTheme: initial.theme };
+  })()`);
+  if (!bilingual.settingsEnglish || bilingual.untranslated.length)
+    throw new Error('Bilingual settings check failed: ' + JSON.stringify(bilingual));
   await new Promise((resolve) => setTimeout(resolve, 250));
   fs.writeFileSync(
     path.join(output, 'desktop.png'),
@@ -49,6 +71,7 @@ async function smokeCheck(window, refreshMetrics) {
       {
         renderer,
         themeArtworkLoaded,
+        bilingual,
         credentialProtection,
         mode: snapshot.mode,
         trafficStatus: snapshot.traffic.status,

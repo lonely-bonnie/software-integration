@@ -1,11 +1,11 @@
 {
-  "name": "rider-console",
-  "version": "0.1.2",
+  "name": "astradesk",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "author": "lonely-bonnie",
   "license": "UNLICENSED",
-  "description": "A modular Windows workbench for service links, DigitalOcean telemetry and Codex quotas.",
+  "description": "AstraDesk — a modular desktop workspace for service links and read-only monitoring.",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -16,7 +16,9 @@
     "test": "node --test tests/*.test.cjs",
     "icons": "node scripts/create-icon.cjs",
     "package:win": "npm run build && electron-builder --win dir",
-    "portable:win": "npm run build && electron-builder --win portable"
+    "portable:win": "npm run build && electron-builder --win portable",
+    "installer:win": "npm run build && electron-builder --win nsis --x64",
+    "release:win": "node scripts/release.cjs"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",
@@ -35,9 +37,9 @@
   },
   "build": {
     "appId": "dev.riderconsole.workbench",
-    "productName": "Rider Console",
+    "productName": "AstraDesk",
     "directories": {
-      "output": "../RiderConsole/releases"
+      "output": "../RiderConsole/releases/${version}"
     },
     "files": [
       "dist/**/*",
@@ -49,13 +51,37 @@
     "win": {
       "target": [
         "dir",
+        "nsis",
         "portable"
       ],
       "icon": "build/icon.ico",
       "signExecutable": false
     },
     "portable": {
-      "artifactName": "RiderConsole-${version}-portable.exe"
+      "artifactName": "AstraDesk-${version}-windows-x64-portable.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AstraDesk",
+      "uninstallDisplayName": "AstraDesk",
+      "deleteAppDataOnUninstall": false,
+      "displayLanguageSelector": true,
+      "installerLanguages": [
+        "en_US",
+        "zh_CN"
+      ],
+      "artifactName": "AstraDesk-${version}-windows-x64-setup.exe",
+      "include": "build/installer.nsh"
     }
+  },
+  "homepage": "https://github.com/lonely-bonnie/software-integration",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lonely-bonnie/software-integration.git"
   }
 }

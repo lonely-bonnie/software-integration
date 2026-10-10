@@ -39,7 +39,8 @@ if (typeof electron === 'string') {
     try {
       const artwork = nativeImage.createFromPath(path.join(root, 'public', 'console-icon-v3.png'));
       if (artwork.isEmpty()) throw new Error('Application emblem is missing');
-      if (artwork.toBitmap()[3] !== 0) throw new Error('Application emblem must preserve transparency');
+      if (artwork.toBitmap()[3] !== 0)
+        throw new Error('Application emblem must preserve transparency');
       const png = (width) => artwork.resize({ width, height: width, quality: 'best' }).toPNG();
       fs.mkdirSync(path.join(root, 'build'), { recursive: true });
       fs.writeFileSync(path.join(root, 'public', 'console-mark-v3.png'), png(128));

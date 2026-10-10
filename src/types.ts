@@ -7,7 +7,25 @@ export interface Website {
   url: string;
 }
 export type ThemeId = 'rider' | 'abyss' | 'warframe' | 'anime';
+export type Language = 'zh-CN' | 'en';
+export interface AppInfo {
+  name: string;
+  version: string;
+  packaged: boolean;
+  startupAvailable: boolean;
+  platform: string;
+  dataDirectory: string;
+  releases: string;
+  issues: string;
+  configurationWarning?: string;
+}
 export interface Settings {
+  schemaVersion: number;
+  language: Language;
+  timeZone: 'local' | 'UTC' | 'Asia/Shanghai';
+  launchAtLogin: boolean;
+  startMinimized: boolean;
+  reduceMotion: boolean;
   unit: 'Mbps' | 'MB/s';
   theme: ThemeId;
   demoMode: boolean;
@@ -58,6 +76,10 @@ export interface Snapshot {
   codex: Quota;
 }
 export interface Bridge {
+  getInfo(): Promise<AppInfo>;
+  openSupport(target: 'releases' | 'issues' | 'data'): Promise<void>;
+  exportSettings(): Promise<boolean>;
+  importSettings(): Promise<Settings | null>;
   getSettings(): Promise<Settings>;
   saveSettings(settings: Settings, token?: string): Promise<Settings>;
   removeToken(): Promise<Settings>;

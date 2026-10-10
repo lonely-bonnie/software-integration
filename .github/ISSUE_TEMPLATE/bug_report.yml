@@ -1,0 +1,24 @@
+name: Bug report / 问题反馈
+description: Report an AstraDesk problem without sharing credentials.
+body:
+  - type: input
+    id: version
+    attributes:
+      label: AstraDesk version / 软件版本
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps and expected result / 复现步骤与预期
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Windows version, language and affected module / 环境与模块
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshot or error text / 截图或错误
+      description: Remove tokens, account information, personal paths and server identifiers before submitting.

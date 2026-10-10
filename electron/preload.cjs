@@ -3,6 +3,10 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld(
   'rider',
   Object.freeze({
+    getInfo: () => ipcRenderer.invoke('app:info'),
+    openSupport: (target) => ipcRenderer.invoke('app:support', target),
+    exportSettings: () => ipcRenderer.invoke('settings:export'),
+    importSettings: () => ipcRenderer.invoke('settings:import'),
     getSettings: () => ipcRenderer.invoke('settings:get'),
     saveSettings: (settings, token) => ipcRenderer.invoke('settings:save', settings, token),
     removeToken: () => ipcRenderer.invoke('token:remove'),

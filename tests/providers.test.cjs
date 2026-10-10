@@ -31,7 +31,7 @@ test('四主题持久化校验、旧 Arctic 迁移与未知主题回退', () => 
     );
   }
   assert.equal(validateSettings({ ...DEFAULT_SETTINGS, theme: 'arctic' }).theme, 'abyss');
-  assert.equal(validateSettings({ ...DEFAULT_SETTINGS, theme: '../unexpected' }).theme, 'rider');
+  assert.equal(validateSettings({ ...DEFAULT_SETTINGS, theme: '../unexpected' }).theme, 'anime');
 });
 
 test('额度保留动态窗口、多个桶；缺失额度不当作零', () => {

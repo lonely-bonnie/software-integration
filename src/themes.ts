@@ -15,7 +15,7 @@ export interface Theme {
 export const themes = definitions as Theme[];
 export function normalizeTheme(value: unknown): ThemeId {
   const migrated = value === 'arctic' ? 'abyss' : value;
-  return themes.find((theme) => theme.id === migrated)?.id ?? 'rider';
+  return themes.find((theme) => theme.id === migrated)?.id ?? 'anime';
 }
 export function getTheme(value: unknown): Theme {
   return themes.find((theme) => theme.id === normalizeTheme(value))!;

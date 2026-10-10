@@ -4,70 +4,7 @@ const os = require('node:os');
 const { spawn } = require('node:child_process');
 const readline = require('node:readline');
 const activeCodexChildren = new Set();
-const THEME_IDS = new Set(require('../shared/themes.json').map((theme) => theme.id));
-
-const DEFAULT_SETTINGS = {
-  unit: 'Mbps',
-  theme: 'rider',
-  demoMode: false,
-  refreshSeconds: 60,
-  modules: { traffic: true, codex: true },
-  websites: [
-    {
-      id: 'digitalocean',
-      name: 'DigitalOcean',
-      subtitle: '云服务器控制台',
-      url: 'https://cloud.digitalocean.com/',
-    },
-    {
-      id: 'tailscale',
-      name: 'Tailscale',
-      subtitle: '私网与设备管理',
-      url: 'https://console.tailscale.com/admin/',
-    },
-  ],
-  digitalOcean: { dropletId: '', tokenConfigured: false },
-  codexPath: '',
-  closeToTray: true,
-};
-
-function validateSettings(input) {
-  if (!input || typeof input !== 'object') throw new Error('设置格式无效');
-  const websites = Array.isArray(input.websites)
-    ? input.websites.slice(0, 30).map((site, index) => {
-        if (!site || typeof site.name !== 'string' || !site.name.trim())
-          throw new Error('网站名称不能为空');
-        const url = new URL(site.url);
-        if (url.protocol !== 'https:' || url.username || url.password)
-          throw new Error('网站须使用 HTTPS 且不能包含登录凭据');
-        return {
-          id: `site-${index}`,
-          name: site.name.trim().slice(0, 60),
-          subtitle: String(site.subtitle || '网站入口').slice(0, 100),
-          url: url.href,
-        };
-      })
-    : DEFAULT_SETTINGS.websites;
-  const dropletId = String(input.digitalOcean?.dropletId || '').trim();
-  if (dropletId && !/^\d{1,20}$/.test(dropletId)) throw new Error('Droplet ID 应为数字');
-  const codexPath = typeof input.codexPath === 'string' ? input.codexPath.trim() : '';
-  if (
-    codexPath &&
-    (!path.isAbsolute(codexPath) || !/^codex(?:\.exe)?$/i.test(path.basename(codexPath)))
-  )
-    throw new Error('请选择 codex.exe 的完整路径');
-  return {
-    unit: input.unit === 'MB/s' ? 'MB/s' : 'Mbps',
-    theme: input.theme === 'arctic' ? 'abyss' : THEME_IDS.has(input.theme) ? input.theme : 'rider',
-    demoMode: input.demoMode === true,
-    refreshSeconds: Math.min(300, Math.max(30, Number(input.refreshSeconds) || 60)),
-    modules: { traffic: input.modules?.traffic !== false, codex: input.modules?.codex !== false },
-    websites,
-    digitalOcean: { dropletId, tokenConfigured: false },
-    codexPath,
-    closeToTray: input.closeToTray !== false,
-  };
-}
+const { DEFAULT_SETTINGS, validateSettings } = require('./settings.cjs');
 
 function normalizeRateLimits(response, sampledAt = Date.now()) {
   const source =
