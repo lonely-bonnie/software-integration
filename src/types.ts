@@ -6,9 +6,10 @@ export interface Website {
   subtitle: string;
   url: string;
 }
+export type ThemeId = 'rider' | 'abyss' | 'warframe' | 'anime';
 export interface Settings {
   unit: 'Mbps' | 'MB/s';
-  theme: 'rider' | 'arctic';
+  theme: ThemeId;
   demoMode: boolean;
   refreshSeconds: number;
   modules: { traffic: boolean; codex: boolean };

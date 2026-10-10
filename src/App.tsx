@@ -25,6 +25,7 @@ import {
   X,
 } from 'lucide-react';
 import { bridge, defaultSettings, isPreview } from './bridge';
+import { getTheme, themes } from './themes';
 import type { Bucket, Point, Settings, Snapshot, Status, Website } from './types';
 
 const statusLabels: Record<Status, string> = {
@@ -206,6 +207,18 @@ export default function App() {
     [token, setToken] = useState(''),
     [now, setNow] = useState(Date.now());
   const [website, setWebsite] = useState({ name: '', url: '' });
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [page]);
+  const navigate = (next: typeof page) => {
+    if (next !== page) {
+      setDraft(structuredClone(settings));
+      setToken('');
+    }
+    setPage(next);
+    setNotice('');
+    setError('');
+  };
   const doRefresh = async () => {
     setRefreshing(true);
     try {
@@ -305,13 +318,14 @@ export default function App() {
       ? '—'
       : (settings.unit === 'MB/s' ? value / 8 : value).toFixed(1);
   const headline = page === 'dashboard' ? '控制中心' : page === 'modules' ? '模块机库' : '系统设置';
+  const theme = getTheme(page === 'settings' ? draft.theme : settings.theme);
   return (
-    <div className={`app theme-${settings.theme}`}>
+    <div className={`app theme-${theme.id}`}>
       <header className="titlebar">
         <div className="title-logo">
-          <Shield size={15} />
+          <img className="title-emblem" src="./console-mark-v3.png" alt="" />
           <span>RIDER CONSOLE</span>
-          <span className="version">v0.1.1</span>
+          <span className="version">v0.1.2</span>
         </div>
         <div className="title-caption">MODULAR DESKTOP WORKBENCH</div>
         <div className="window-buttons">
@@ -333,7 +347,7 @@ export default function App() {
       <div className="app-shell">
         <aside className="sidebar">
           <div className="brand-mark">
-            <img src="./rider-mark-v2.png" alt="黑红装甲与蓝色面屏标识" />
+            <img src="./console-mark-v3.png" alt="Rider Console 控制核心标识" />
             <div>
               <strong>
                 RIDER<span>CONSOLE</span>
@@ -354,9 +368,7 @@ export default function App() {
                 key={item.id}
                 className={page === item.id ? 'active' : ''}
                 onClick={() => {
-                  setPage(item.id);
-                  setNotice('');
-                  setError('');
+                  navigate(item.id);
                 }}
                 aria-current={page === item.id ? 'page' : undefined}
               >
@@ -370,6 +382,11 @@ export default function App() {
             ))}
           </nav>
           <div className="sidebar-bottom">
+            <button className="theme-switch" onClick={() => navigate('settings')}>
+              <Sparkles size={14} />
+              <span>{theme.name}</span>
+              <ChevronRight size={13} />
+            </button>
             <div className="system-chip">
               <i />
               <span>{isPreview ? '浏览器预览' : mode ? '演示模式' : '本机工作台'}</span>
@@ -405,14 +422,20 @@ export default function App() {
                 </span>
               </h1>
             </div>
-            <button
-              className="refresh-button"
-              onClick={() => void doRefresh()}
-              disabled={refreshing}
-            >
-              <RefreshCw size={15} className={refreshing ? 'spin' : ''} />
-              {refreshing ? '正在读取' : '刷新数据'}
-            </button>
+            <div className="page-actions">
+              <button className="secondary-button" onClick={() => navigate('settings')}>
+                <Sparkles size={14} />
+                主题
+              </button>
+              <button
+                className="refresh-button"
+                onClick={() => void doRefresh()}
+                disabled={refreshing}
+              >
+                <RefreshCw size={15} className={refreshing ? 'spin' : ''} />
+                {refreshing ? '正在读取' : '刷新数据'}
+              </button>
+            </div>
           </div>
           {(isPreview || mode) && (
             <div className="demo-banner">
@@ -420,7 +443,7 @@ export default function App() {
               {isPreview
                 ? '浏览器预览，所有监控数字均为演示数据。'
                 : '演示模式已开启，当前数字不是账户真实数据。'}
-              <button onClick={() => setPage('settings')}>
+              <button onClick={() => navigate('settings')}>
                 切换设置
                 <ChevronRight size={13} />
               </button>
@@ -440,11 +463,11 @@ export default function App() {
           {page === 'dashboard' && (
             <>
               <section className="hero">
-                <img className="hero-art" src="./rider-hero-v2.png" alt="" aria-hidden="true" />
+                <img className="hero-art" src={theme.artwork} alt="" aria-hidden="true" />
                 <div className="hero-copy">
                   <div className="hero-tag">
                     <i />
-                    SYSTEM READY <span>/ PERSONAL WORKSPACE</span>
+                    {theme.eyebrow} <span>/ PERSONAL WORKSPACE</span>
                   </div>
                   <h2>
                     所有服务。
@@ -468,7 +491,8 @@ export default function App() {
                   </div>
                 </div>
                 <div className="armor-label" aria-hidden="true">
-                  RIDER SYSTEM<span>BLACK / RED / PRECISION</span>
+                  {theme.subtitle}
+                  <span>{theme.signature}</span>
                 </div>
               </section>
               <div className="section-title">
@@ -477,7 +501,7 @@ export default function App() {
                   <h2>快速入口</h2>
                   <small>QUICK ACCESS</small>
                 </div>
-                <button className="text-button" onClick={() => setPage('settings')}>
+                <button className="text-button" onClick={() => navigate('settings')}>
                   管理入口
                   <ArrowUpRight size={14} />
                 </button>
@@ -574,7 +598,7 @@ export default function App() {
                       <div className="data-message">
                         {traffic.message}
                         {traffic.status === 'unconfigured' && (
-                          <button onClick={() => setPage('settings')}>
+                          <button onClick={() => navigate('settings')}>
                             配置连接
                             <ChevronRight size={13} />
                           </button>
@@ -629,7 +653,7 @@ export default function App() {
                         <Cpu size={28} />
                         <strong>{refreshing ? '正在读取账户额度' : '额度暂不可用'}</strong>
                         <span>{quota?.message || '正在建立 Codex 数据连接'}</span>
-                        <button className="text-button" onClick={() => setPage('settings')}>
+                        <button className="text-button" onClick={() => navigate('settings')}>
                           检查连接
                           <ChevronRight size={13} />
                         </button>
@@ -660,7 +684,7 @@ export default function App() {
                 <div className="empty-modules">
                   <Layers3 size={30} />
                   <p>监控模块均已停用</p>
-                  <button onClick={() => setPage('modules')}>打开模块机库</button>
+                  <button onClick={() => navigate('modules')}>打开模块机库</button>
                 </div>
               )}
               <div className="bottom-strip">
@@ -669,7 +693,7 @@ export default function App() {
                   LOCAL WORKSPACE
                 </span>
                 <p>观测流量与官方计费分别展示。桌宠接口已预留。</p>
-                <span>v0.1.1 / PRECISION VISOR</span>
+                <span>v0.1.2 / {theme.subtitle}</span>
               </div>
             </>
           )}
@@ -744,6 +768,46 @@ export default function App() {
           )}
           {page === 'settings' && (
             <div className="settings-grid">
+              <section className="panel settings-panel theme-settings">
+                <div className="theme-settings-heading">
+                  <div>
+                    <h2>
+                      <Sparkles size={19} />
+                      主题方案
+                    </h2>
+                    <p className="settings-note">
+                      选择即可预览，点击“保存设置”后记住；离开此页会放弃未保存的修改。
+                    </p>
+                  </div>
+                  <span className="theme-count">04 / THEMES</span>
+                </div>
+                <div className="theme-options" role="group" aria-label="界面主题">
+                  {themes.map((option) => (
+                    <button
+                      className={`theme-option ${draft.theme === option.id ? 'selected' : ''}`}
+                      key={option.id}
+                      aria-label={`选择${option.name}主题`}
+                      aria-pressed={draft.theme === option.id}
+                      onClick={() => setDraft({ ...draft, theme: option.id })}
+                    >
+                      <img src={option.artwork} alt="" />
+                      <div className="theme-option-copy">
+                        <strong>
+                          {option.name}
+                          {draft.theme === option.id && <Check size={15} />}
+                        </strong>
+                        <small>{option.subtitle}</small>
+                        <p>{option.description}</p>
+                        <div className="theme-palette" aria-hidden="true">
+                          {option.palette.map((color) => (
+                            <i key={color} style={{ background: color }} />
+                          ))}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </section>
               <section className="panel settings-panel">
                 <h2>
                   <Cloud size={19} />
@@ -844,18 +908,6 @@ export default function App() {
                   外观与运行
                 </h2>
                 <div className="form-row">
-                  <label>
-                    界面主题
-                    <select
-                      value={draft.theme}
-                      onChange={(e) =>
-                        setDraft({ ...draft, theme: e.target.value as Settings['theme'] })
-                      }
-                    >
-                      <option value="rider">Rider · 红色装甲</option>
-                      <option value="arctic">Arctic · 蓝色装甲</option>
-                    </select>
-                  </label>
                   <label>
                     速率单位
                     <select

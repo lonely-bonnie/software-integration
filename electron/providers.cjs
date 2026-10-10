@@ -4,6 +4,7 @@ const os = require('node:os');
 const { spawn } = require('node:child_process');
 const readline = require('node:readline');
 const activeCodexChildren = new Set();
+const THEME_IDS = new Set(require('../shared/themes.json').map((theme) => theme.id));
 
 const DEFAULT_SETTINGS = {
   unit: 'Mbps',
@@ -57,7 +58,7 @@ function validateSettings(input) {
     throw new Error('请选择 codex.exe 的完整路径');
   return {
     unit: input.unit === 'MB/s' ? 'MB/s' : 'Mbps',
-    theme: input.theme === 'arctic' ? 'arctic' : 'rider',
+    theme: input.theme === 'arctic' ? 'abyss' : THEME_IDS.has(input.theme) ? input.theme : 'rider',
     demoMode: input.demoMode === true,
     refreshSeconds: Math.min(300, Math.max(30, Number(input.refreshSeconds) || 60)),
     modules: { traffic: input.modules?.traffic !== false, codex: input.modules?.codex !== false },

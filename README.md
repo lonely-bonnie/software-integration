@@ -1,8 +1,17 @@
 # Rider Console · Windows 软件集成中心
 
-一个可扩展的桌面工作台，把常用网站、服务器流量与 Codex 额度放在同一界面。当前版本 **0.1.1**，使用 Electron + React + TypeScript，首页采用黑红金属装甲与蓝色锐角面屏，提供装甲主题和蓝色 Arctic 主题。
+一个可扩展的桌面工作台，把常用网站、服务器流量与 Codex 额度放在同一界面。当前版本 **0.1.2**，使用 Electron + React + TypeScript，提供独立软件图标与四套可切换主题：英雄骑士、透光海底、Gauss Prime 动能冲刺、暖色流萤。
 
-![装甲主题界面，监控数字为演示数据](docs/assets/dashboard-demo.jpg)
+![英雄骑士主题实际界面，监控数字为浏览器演示数据](docs/assets/theme-rider-demo.png)
+
+| 主题                                            | 界面与主视觉                               |
+| ----------------------------------------------- | ------------------------------------------ |
+| 假面骑士                                        | 钢蓝灰界面，黑红锐角装甲与末日晨光         |
+| [深海迷航](docs/assets/theme-abyss-demo.png)    | 浅海蓝、透光海底、珊瑚与潜航器             |
+| [Gauss Prime](docs/assets/theme-gauss-demo.png) | 白银青蓝、追动外观灵感、冲刺残影与热能爆发 |
+| [流萤](docs/assets/theme-firefly-demo.png)      | 奶油白、桃色、薄荷绿与日光花园             |
+
+在“主题”或“系统设置”中选择图片卡片即可预览，保存后保留；离开设置页放弃未保存的修改。旧 Arctic 配置自动迁移为深海主题。角色图由 AI 生成，为同人概念美术；视频依据和精确提示词见 [最终生成记录](docs/concepts/THEME-GENERATION-FINAL.md)。
 
 ## 已实现
 
@@ -16,7 +25,7 @@
 
 ## 使用
 
-Windows x64 便携版运行 `RiderConsole-0.1.1-portable.exe`，或者运行展开目录中的 `Rider Console.exe`。本机桌面已有 `Rider Console` 快捷方式，指向固定的展开目录。初版未签名，尚未做安装器和自动更新。
+Windows x64 便携版运行 `RiderConsole-0.1.2-portable.exe`，或者运行展开目录中的 `Rider Console.exe`。本机桌面已有 `Rider Console` 快捷方式，指向固定的展开目录。初版未签名，尚未做安装器和自动更新。
 
 1. 打开工作台即可点击网站卡片。
 2. 在“系统设置”填入 DO Droplet ID 与包含 `monitoring:read` 权限的只读 Token，保存后读取流量。
@@ -67,4 +76,4 @@ npm run portable:win # 便携 EXE
 - [开源项目调研](docs/OPEN_SOURCE_RESEARCH.md)：vnStat、Beszel、Netdata 与 DO 专用看板选型。
 - 官方依据：[DigitalOcean Monitoring API](https://docs.digitalocean.com/reference/api/reference/monitoring/)、[Codex App Server](https://developers.openai.com/codex/app-server)、[Electron safeStorage](https://www.electronjs.org/docs/latest/api/safe-storage)。
 
-界面层次参考 [Arwes](https://github.com/arwes/arwes) 和 [Astro Sci-Fi UI](https://github.com/jonnysmillie/astro-sci-fi-ui)。0.1.1 主视觉使用内置 image_gen 编辑，按 A 的黑红装甲主体融合 F 的眼部方向；侧栏、Windows 与托盘图标从该图派生。候选与选择记录见 [视觉方案](docs/VISUAL_CONCEPTS.md)，精确提示词见 [融合提示词](docs/concepts/AF-FUSION-PROMPT.md)。
+界面层次参考 [Arwes](https://github.com/arwes/arwes) 和 [Astro Sci-Fi UI](https://github.com/jonnysmillie/astro-sci-fi-ui)。0.1.2 四主题图片与独立透明图标使用内置 image_gen 生成；骑士保留 A 主体与 F 眼部身份，Gauss 参考实际检查的皮肤配色与运动视频。侧栏、Windows 与托盘使用独立标识。候选与选择记录见 [视觉方案](docs/VISUAL_CONCEPTS.md)，精确提示词和参考视频见 [最终生成记录](docs/concepts/THEME-GENERATION-FINAL.md)。

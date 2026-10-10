@@ -1,0 +1,42 @@
+[
+  {
+    "id": "rider",
+    "name": "假面骑士",
+    "subtitle": "RIDER / DAYBREAK",
+    "description": "黑红锐角装甲、破云晨光，末日中的守护者。",
+    "artwork": "./themes/rider-daybreak-v4.png",
+    "eyebrow": "HEROES AT DAYBREAK",
+    "signature": "STEEL / CRIMSON / HOPE",
+    "palette": ["#303b48", "#d74c49", "#bcd4e7", "#dfbd84"]
+  },
+  {
+    "id": "abyss",
+    "name": "深海迷航",
+    "subtitle": "ABYSS / EXPLORATION",
+    "description": "透光海底、珊瑚与潜航器，浅海蓝探索界面。",
+    "artwork": "./themes/abyss-daylight-v2.png",
+    "eyebrow": "DEEP OCEAN EXPLORATION",
+    "signature": "OCEAN / LIGHT / DISCOVERY",
+    "palette": ["#e9f5f7", "#066a85", "#52bcb7", "#dd792d"]
+  },
+  {
+    "id": "warframe",
+    "name": "Gauss Prime",
+    "subtitle": "GAUSS / MACH RUSH",
+    "description": "追动外观灵感、白银青蓝配色，高速冲刺与热能爆发。",
+    "artwork": "./themes/gauss-kinetic-v3.png",
+    "eyebrow": "KINETIC SYSTEM ONLINE",
+    "signature": "SILVER / CYAN / REDLINE",
+    "palette": ["#edf3f8", "#197caa", "#bfa66d", "#182d41"]
+  },
+  {
+    "id": "anime",
+    "name": "流萤",
+    "subtitle": "FIREFLY / WARMTH",
+    "description": "流萤与日光花园，奶油白、桃色与薄荷绿。",
+    "artwork": "./themes/firefly-warm-v2.png",
+    "eyebrow": "FIREFLIES IN THE SUNLIGHT",
+    "signature": "CREAM / PEACH / MINT",
+    "palette": ["#fff8ee", "#ce7065", "#5d9e8b", "#eec79d"]
+  }
+]

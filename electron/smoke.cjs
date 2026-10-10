@@ -22,6 +22,11 @@ async function smokeCheck(window, refreshMetrics) {
     nodeAvailable: typeof window.require !== 'undefined',
     artworkLoaded: [...document.images].every(image => image.complete && image.naturalWidth > 0)
   }); })()`);
+  const themeAssets = require('../shared/themes.json').map((theme) => theme.artwork);
+  const themeArtworkLoaded = await window.webContents
+    .executeJavaScript(`Promise.all(${JSON.stringify(themeAssets)}.map(src => new Promise(resolve => {
+    const image = new Image(); image.onload = () => resolve(image.naturalWidth > 0); image.onerror = () => resolve(false); image.src = src;
+  }))).then(results => results.length === 4 && results.every(Boolean))`);
   const snapshot = await refreshMetrics();
   if (
     !renderer.heading?.includes('控制中心') ||
@@ -29,6 +34,7 @@ async function smokeCheck(window, refreshMetrics) {
     !renderer.ipcSettingsReadable ||
     renderer.nodeAvailable ||
     !renderer.artworkLoaded ||
+    !themeArtworkLoaded ||
     !snapshot
   )
     throw new Error('Renderer or bridge health check failed');
@@ -42,6 +48,7 @@ async function smokeCheck(window, refreshMetrics) {
     JSON.stringify(
       {
         renderer,
+        themeArtworkLoaded,
         credentialProtection,
         mode: snapshot.mode,
         trafficStatus: snapshot.traffic.status,

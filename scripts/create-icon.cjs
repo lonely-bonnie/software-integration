@@ -1,4 +1,4 @@
-// Derive application assets from the selected hero. No image-processing dependency required.
+// Resize the independent application emblem. No image-processing dependency required.
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
@@ -37,20 +37,12 @@ if (typeof electron === 'string') {
   const { app, nativeImage } = electron;
   app.whenReady().then(() => {
     try {
-      const artwork = nativeImage.createFromPath(path.join(root, 'public', 'rider-hero-v2.png'));
-      if (artwork.isEmpty()) throw new Error('Selected hero artwork is missing');
-      const size = artwork.getSize();
-      // A square close-up keeps the blue visor and red center stripe readable at icon sizes.
-      const side = Math.round(size.height * 0.75);
-      const portrait = artwork.crop({
-        x: Math.round(size.width * 0.615),
-        y: Math.round(size.height * 0.04),
-        width: side,
-        height: side,
-      });
-      const png = (width) => portrait.resize({ width, height: width, quality: 'best' }).toPNG();
+      const artwork = nativeImage.createFromPath(path.join(root, 'public', 'console-icon-v3.png'));
+      if (artwork.isEmpty()) throw new Error('Application emblem is missing');
+      if (artwork.toBitmap()[3] !== 0) throw new Error('Application emblem must preserve transparency');
+      const png = (width) => artwork.resize({ width, height: width, quality: 'best' }).toPNG();
       fs.mkdirSync(path.join(root, 'build'), { recursive: true });
-      fs.writeFileSync(path.join(root, 'public', 'rider-mark-v2.png'), png(128));
+      fs.writeFileSync(path.join(root, 'public', 'console-mark-v3.png'), png(128));
       fs.writeFileSync(path.join(root, 'electron', 'app-icon.png'), png(256));
       fs.writeFileSync(path.join(root, 'electron', 'tray.png'), png(32));
       const sizes = [256, 48, 32, 16];
@@ -70,7 +62,7 @@ if (typeof electron === 'string') {
         offset += images[index].length;
       });
       fs.writeFileSync(path.join(root, 'build', 'icon.ico'), Buffer.concat([header, ...images]));
-      console.log('Hero portrait, Windows icon and tray icon generated.');
+      console.log('Independent application emblem, Windows icon and tray icon generated.');
       app.exit(0);
     } catch (error) {
       console.error(error.message);

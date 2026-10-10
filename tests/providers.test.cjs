@@ -15,6 +15,25 @@ const {
 const configured = { ...DEFAULT_SETTINGS, digitalOcean: { dropletId: '12345' } };
 const response = (values) => ({ ok: true, json: async () => ({ data: { result: [{ values }] } }) });
 
+test('四主题持久化校验、旧 Arctic 迁移与未知主题回退', () => {
+  const definitions = require('../shared/themes.json');
+  assert.deepEqual(
+    definitions.map((theme) => theme.id),
+    ['rider', 'abyss', 'warframe', 'anime'],
+  );
+  for (const theme of definitions) {
+    const settings = validateSettings({ ...DEFAULT_SETTINGS, theme: theme.id });
+    assert.equal(settings.theme, theme.id);
+    assert.ok(
+      require('node:fs').existsSync(
+        require('node:path').join(__dirname, '..', 'public', theme.artwork),
+      ),
+    );
+  }
+  assert.equal(validateSettings({ ...DEFAULT_SETTINGS, theme: 'arctic' }).theme, 'abyss');
+  assert.equal(validateSettings({ ...DEFAULT_SETTINGS, theme: '../unexpected' }).theme, 'rider');
+});
+
 test('额度保留动态窗口、多个桶；缺失额度不当作零', () => {
   const buckets = normalizeRateLimits(
     {

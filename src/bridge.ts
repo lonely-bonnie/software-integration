@@ -1,4 +1,5 @@
 import type { Bridge, Settings, Snapshot } from './types';
+import { normalizeTheme } from './themes';
 
 export const defaultSettings: Settings = {
   unit: 'Mbps',
@@ -84,11 +85,13 @@ try {
 } catch {
   previewSettings = { ...defaultSettings, demoMode: true };
 }
+previewSettings.theme = normalizeTheme(previewSettings.theme);
 const preview: Bridge = {
   getSettings: async () => structuredClone(previewSettings),
   saveSettings: async (settings) => {
     previewSettings = {
       ...settings,
+      theme: normalizeTheme(settings.theme),
       demoMode: true,
       digitalOcean: { dropletId: '', tokenConfigured: false },
     };
